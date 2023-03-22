@@ -5,7 +5,7 @@ const client = require("./client");
 // database functions
 
 // user functions
-async function createUser({ username, password }) {
+const createUser = async({ username, password })=> {
   try{
     
 console.log('USERNAMEEEEEEEEEE',username,'PASSWORDDDDDDDDD',password);
@@ -21,19 +21,24 @@ return users;
   }
 }
 
-async function getUser({ username, password }) {
-// try {
-//   const { rows: [user]} = await clienty.query(`
-  
-//   `)
-// }
+const getUser = async({ username, password }) => {
+  try {
+    const { rows } = await client.query(`
+    SELECT users FROM fitness-dev
+    VALUES ($1, $2)
+    
+    `, [username, password])
+
+  } catch (error) {
+    throw error
+  }
 }
 
-async function getUserById(userId) {
+const getUserById = async(userId) => {
 
 }
 
-async function getUserByUsername(userName) {
+const getUserByUsername = async(userName) => {
 
 }
 
