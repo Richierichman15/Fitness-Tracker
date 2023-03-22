@@ -1,4 +1,6 @@
 const client = require("./client");
+const bcrypt = require('bcrypt');
+const SALT_COUNT = 10
 
 
 
@@ -6,40 +8,66 @@ const client = require("./client");
 
 // user functions
 const createUser = async({ username, password })=> {
+  const passwordHash = await bcrypt.hash(password, SALT_COUNT)
   try{
     
-console.log('USERNAMEEEEEEEEEE',username,'PASSWORDDDDDDDDD',password);
-const {rows: [users]} = await client.query(`
+const {rows: [user]} = await client.query(`
     INSERT INTO users(username, password)
-    VALUES($1,$2)
-    RETURNING *;
-`,[username, password])
-console.log('USERSSSSSSSSSSSS', users); 
-return users;
+    VALUES($1, $2)
+    RETURNING id, username;
+`,[username, passwordHash])
+return user
   } catch(err) {
     console.log(err);
   }
 }
 
 const getUser = async({ username, password }) => {
+  if (!username || !password) {
+    return
+  }
   try {
-    const { rows } = await client.query(`
-    SELECT users FROM fitness-dev
-    VALUES ($1, $2)
-    
-    `, [username, password])
-
+   const user = await getUserByUsername(username)
+   console.log('hereeeeeeeeeee', user);
+   if (!user) {
+    return
+   }
+   const passwordHash = user.password
+   const matchPassword = await bcrypt.compare(password, passwordHash)
+   if (!matchPassword) {
+    return 
+   } 
+   delete user.password
+   console.log('afterrrrrrr', user);
+   return user
   } catch (error) {
     throw error
   }
 }
 
 const getUserById = async(userId) => {
+  try {
+    const { rows } = await client.query(`
+    SELECT users FROM fitness-dev
+    WHERE id=${userId}
+    RETURN {}
+    `, [userId])
 
+  } catch (error) {
+    throw error
+  }
 }
 
 const getUserByUsername = async(userName) => {
-
+  try {
+    const { rows: [user] } = await client.query(`
+    SELECT * FROM users
+    WHERE username=$1;
+    `, [userName])
+    return user
+  } catch (error) {
+    throw error
+  }
 }
 
 module.exports = {

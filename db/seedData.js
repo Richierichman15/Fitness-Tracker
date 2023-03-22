@@ -21,7 +21,7 @@ async function createTables() {
   CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     username varchar(100) NOT NULL,
-    password varchar(30) NOT NULL
+    password varchar(100) NOT NULL
   );
 
   CREATE TABLE activities(
