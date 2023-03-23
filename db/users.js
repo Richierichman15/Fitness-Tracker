@@ -28,7 +28,6 @@ const getUser = async({ username, password }) => {
   }
   try {
    const user = await getUserByUsername(username)
-   console.log('hereeeeeeeeeee', user);
    if (!user) {
     return
    }
@@ -38,7 +37,6 @@ const getUser = async({ username, password }) => {
     return 
    } 
    delete user.password
-   console.log('afterrrrrrr', user);
    return user
   } catch (error) {
     throw error
