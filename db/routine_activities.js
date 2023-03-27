@@ -1,11 +1,21 @@
 const client = require("./client");
 
-async function addActivityToRoutine({
+const addActivityToRoutine = async({
   routineId,
   activityId,
   count,
-  duration,
-}) {}
+  duration
+}) => {
+  const {rows} =await client.query(`
+  INSERT INTO routine_activity("routineId", "activityId", count, duration)
+  VALUES($1,$2,$3,$4)
+  `, [routineId, activityId, count, duration])
+  console.log('activity', rows);
+  return {routineId,
+    activityId,
+    count,
+    duration};
+}
 
 async function getRoutineActivityById(id) {}
 

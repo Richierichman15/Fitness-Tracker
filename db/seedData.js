@@ -10,7 +10,7 @@ async function dropTables() {
    DROP TABLE IF EXISTS users;
    DROP TABLE IF EXISTS activities;
    DROP TABLE IF EXISTS routines;
-   DROP TABLE IF EXISTS "routineActivities";
+   DROP TABLE IF EXISTS "routine_activity";
   `)
   console.log('Finished dropping tables!');
 }
@@ -39,7 +39,7 @@ async function createTables() {
     goal TEXT
   );
 
-  CREATE TABLE "routineActivities"(
+  CREATE TABLE "routine_activity"(
     id SERIAL PRIMARY KEY,
     "routineId" INT,
     "activityId" INT,

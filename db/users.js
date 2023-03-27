@@ -45,12 +45,12 @@ const getUser = async({ username, password }) => {
 
 const getUserById = async(userId) => {
   try {
-    const { rows } = await client.query(`
-    SELECT users FROM fitness-dev
-    WHERE id=${userId}
-    RETURN {}
+    const { rows: [user] } = await client.query(`
+    SELECT * FROM users
+    WHERE id=$1
     `, [userId])
-
+    delete user.password
+    return user
   } catch (error) {
     throw error
   }
