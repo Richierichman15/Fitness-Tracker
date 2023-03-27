@@ -64,45 +64,42 @@ async function attachActivitiesToRoutines(routines) {}
 
 // async function updateActivity({ id, ...fields }) {
 
-const updateActivity = async({ id, ...fields }) => {
-
-
+const updateActivity = async({ id, ...fields }) => { 
+//fields.name yields nothing
+console.log('nameeeeeeee:', {...fields},'fields.name', fields.name, 'fields descript:',fields.description);
 console.log('The id before all is:',id,'The fields before is:',fields);
 //ID is 12, FIELDS is {name: 'softball}
  try {
 
   if (!fields.name){
+    console.log('no NAME');
     console.log('id before name',id,'no name.............',fields.name,'desc:',fields.description);
     //id is 13, name is undefined, desc is Football for life
     const {rows: [newAct2]} = await client.query(`
     UPDATE activities
-    SET name=$1
+    SET description=$1
     WHERE id=$2
     RETURNING *;  
   
-    `,[fields.name, id, ])
+    `,[fields.description, id ])
     console.log('id after name:',id,'descript after....',fields.description,'name after:',fields.name);
     //id is 13, desc is Football for life, name is undefined
     return newAct2
   }
 if (!fields.description){
+  console.log('no DESCRIPT');
   console.log('id before desc:',id,'no desc...............',fields.description,'name?',fields.name);
   //id is 12, desc is undefined, name is softball
   const {rows: [newAct]} = await client.query(`
   UPDATE activities
-  SET description=$1
+  SET name=$1
   WHERE id=$2
-  RETURNING *;  
-
-  `,[fields.description, id])
+  RETURNING *;
+  `,[fields.name, id])
   console.log('id after desc:',id,'name after:',fields.name,'descript after....',fields.description);
   //id is 12, name is softball, desc is undefined
   return newAct;
 }
-
-  console.log('iddddd:',id,'fieldsssssss:', fields);
- 
-
   
  } catch(err) {
   console.log(err);
