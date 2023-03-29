@@ -107,7 +107,7 @@ describe("DB Routines", () => {
 
   afterAll(async () => {
     client.query(`
-        DELETE FROM routine_activities;
+        DELETE FROM routine_activity;
         DELETE FROM routines;
         DELETE FROM activities;
       `);
@@ -117,7 +117,7 @@ describe("DB Routines", () => {
      and write the addActivityToRoutine function.****/
 
   describe("createRoutine", () => {
-    xit("Creates and returns the new routine", async () => {
+    it("Creates and returns the new routine", async () => {
       const user = await createFakeUser();
       const routine = await createRoutine({
         creatorId: user.id,

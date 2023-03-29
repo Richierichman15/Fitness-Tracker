@@ -3,13 +3,13 @@ const client = require("./client");
 const createRoutine = async({ creatorId, isPublic, name, goal }) =>{
 
 
-  const {rows: [Result]} = await client.query(`
+  const {rows: [result]} = await client.query(`
     INSERT INTO routines("creatorId", "isPublic", name, goal)
     VALUES($1, $2, $3, $4)
     RETURNING *;
   `, [ creatorId, isPublic, name, goal])
-  console.log('ROWS', [Result]);
-  return creatorId, isPublic, name, goal;
+  console.log('ROWS', [result]);
+  return creatorId, isPublic, name, goal
 }
 
 const getRoutineById = async(id) => {
