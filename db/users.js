@@ -39,7 +39,7 @@ const getUser = async({ username, password }) => {
    delete user.password
    return user
   } catch (error) {
-    throw error
+    console.log(error);
   }
 }
 
@@ -52,7 +52,7 @@ const getUserById = async(userId) => {
     delete user.password
     return user
   } catch (error) {
-    throw error
+    console.log(error);
   }
 }
 
@@ -64,7 +64,7 @@ const getUserByUsername = async(userName) => {
     `, [userName])
     return user
   } catch (error) {
-    throw error
+    console.log(error);
   }
 }
 
