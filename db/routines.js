@@ -1,25 +1,139 @@
+const { attachActivitiesToRoutines, getActivityById } = require("./activities");
+const { getUserByUsername } = require("./users");
 const client = require("./client");
+const createRoutine = async({ creatorId, isPublic, name, goal }) => {
+  try {
+  const {rows: [routine]} = await client.query(`
+    INSERT INTO routines("creatorId", "isPublic", "name", "goal")
+    VALUES($1, $2, $3, $4)
+    RETURNING *;
+  `, [ creatorId, isPublic, name, goal])
+  return routine;
+  } catch(err) {
+    console.log(err);
+  }
+}
+const getRoutineById = async(id) => {
+  try {
+    const {rows: [routine]} = await client.query(`
+    SELECT * FROM routines
+    WHERE id=$1;
+   `, [id])
+    return routine
+  } catch(err) {
+    console.log(err);
+  }
+}
+// gitonga's doing this one
+const getRoutinesWithoutActivities = async() => {
+ try{
+  const { rows } = await client.query(`
+  SELECT * FROM routines;
+  `)
+return rows;
+ } catch(err){
+  console.log(err);
+ }
+}
+//gitonga's doing this one
+async function getAllRoutines() {
+try {
+  const {rows: routines } = await client.query(`
+  SELECT routines.*, users.username AS "creatorName"
+  FROM routines
+  JOIN users
+  ON routines."creatorId"=users.id;
+  `)
+  return attachActivitiesToRoutines(routines)
+} catch(err){
+  console.log(err);
+}
+}
+const getAllPublicRoutines = async() => {
+  try {
+  const {rows: routines} = await client.query(`
+   SELECT routines.*, users.username AS "creatorName"
+   FROM routines
+   JOIN users
+   ON routines."creatorId"=users.id
+   WHERE "isPublic"=true;
+  `)
+  return attachActivitiesToRoutines(routines);
+  } catch(err) {
+    console.error(err);
+  }
+}
+//i'm doing this one
+const getAllRoutinesByUser = async({ username }) => {
 
-async function createRoutine({ creatorId, isPublic, name, goal }) {}
+try{
+const user = await getUserByUsername(username);
 
-async function getRoutineById(id) {}
+const { rows: routines } = await client.query(`
+SELECT routines.*, users.username AS "creatorName"
+FROM routines
+JOIN users
+ON routines."creatorId"=users.id
+WHERE routines."creatorId"=$1;
+`,[user.id])
+// console.log('routines:', routines);
+return attachActivitiesToRoutines(routines);
+  } catch(err) {
+    console.error(err);
+}
+}
+//Gitonga doing this one
+const getPublicRoutinesByUser = async({ username }) => {
 
-async function getRoutinesWithoutActivities() {}
+try {
+  const user = await getUserByUsername(username);
+  const { rows: pubRoutines } = await client.query(`
+  SELECT routines.*, users.username AS "creatorName"
+  FROM routines
+  JOIN users
+  On routines."creatorId"=users.id
+  WHERE routines."creatorId"=$1 AND routines."isPublic"=$2
+  
+  `, [user.id, true]);
+return attachActivitiesToRoutines(pubRoutines);
+} catch(err){
+  console.log(err);
+}
 
-async function getAllRoutines() {}
 
-async function getAllPublicRoutines() {}
 
-async function getAllRoutinesByUser({ username }) {}
+}
+//I'm getting this oen
+const getPublicRoutinesByActivity = async({ id }) => {
+try{
+const activity = await getActivityById(id);
+console.log('.......activity.id........',activity.id,'....id.....',id);
 
-async function getPublicRoutinesByUser({ username }) {}
+const { rows: pubRoutines } = await client.query(`
+SELECT routines.*, activities.name AS "activityName"
+FROM routines
+JOIN routine_activities
+On routines.id = routine_activities."routineId"
+JOIN activities
+ON routine_activities."activityId" = activities.id
+WHERE activities.id=$1 AND routines."isPublic"=true;
 
-async function getPublicRoutinesByActivity({ id }) {}
+`, [id]);
+console.log('..........pubroutines....',pubRoutines);
 
-async function updateRoutine({ id, ...fields }) {}
 
-async function destroyRoutine(id) {}
+return attachActivitiesToRoutines(pubRoutines);
 
+} catch(err){
+  console.log(err);
+}
+}
+//Gitonga's doing this one
+const updateRoutine = async({ id, ...fields }) => {
+}
+//I'm getting this one
+const destroyRoutine = async(id)  => {
+}
 module.exports = {
   getRoutineById,
   getRoutinesWithoutActivities,

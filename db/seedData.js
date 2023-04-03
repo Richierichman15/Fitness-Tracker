@@ -1,15 +1,59 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
+const { createUser } = require("../db/users.js");
+const { createActivity, getAllActivities } = require("../db/activities.js")
+const { createRoutine, getRoutinesWithoutActivities } = require("../db/routines")
+const { addActivityToRoutine } = require("../db/routine_activities")
 const client = require("./client")
-
 async function dropTables() {
   console.log("Dropping All Tables...")
-  // drop all tables, in the correct order
+  try {
+ await client.query(`
+   DROP TABLE IF EXISTS routine_activities;
+   DROP TABLE IF EXISTS routines;
+   DROP TABLE IF EXISTS activities;
+   DROP TABLE IF EXISTS users;
+  `)
+  console.log('Finished dropping tables!');
+  } catch(err){
+    console.log(err);
+  }
 }
-
 async function createTables() {
   console.log("Starting to build tables...")
   // create all tables, in the correct order
+  try {
+ await client.query(`
+  CREATE TABLE users(
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL
+  );
+  CREATE TABLE activities(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT NOT NULL
+  );
+  CREATE TABLE routines(
+    id SERIAL PRIMARY KEY,
+    "creatorId" INT REFERENCES users(id),
+    "isPublic" BOOLEAN DEFAULT false,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    goal TEXT NOT NULL
+  );
+  CREATE TABLE routine_activities(
+    id SERIAL PRIMARY KEY,
+    "routineId" INT REFERENCES routines(id),
+    "activityId" INT REFERENCES activities(id),
+    duration INT,
+    count INT,
+    UNIQUE ("routineId", "activityId")
+  );
+  `);
+  console.log('Finished constructing tables!');
+  } catch(err){
+    console.log(err);
+  }
 }
 
 /* 
