@@ -106,20 +106,19 @@ return attachActivitiesToRoutines(pubRoutines);
 //I'm getting this oen
 const getPublicRoutinesByActivity = async({ id }) => {
 try{
-const activity = await getActivityById(id);
-console.log('.......activity.id........',activity.id,'....id.....',id);
 
 const { rows: pubRoutines } = await client.query(`
-SELECT routines.*, activities.name AS "activityName"
+
+SELECT routines.*, activities.name AS "activityName", users.username AS "creatorName"
 FROM routines
 JOIN routine_activities
 On routines.id = routine_activities."routineId"
 JOIN activities
 ON routine_activities."activityId" = activities.id
+JOIN users 
+ON routines."creatorId" = users.id
 WHERE activities.id=$1 AND routines."isPublic"=true;
-
 `, [id]);
-console.log('..........pubroutines....',pubRoutines);
 
 
 return attachActivitiesToRoutines(pubRoutines);
@@ -133,7 +132,32 @@ const updateRoutine = async({ id, ...fields }) => {
 }
 //I'm getting this one
 const destroyRoutine = async(id)  => {
+  console.log('........id.............',id);
+try{
+const {routineFalse} = await client.query(`
+
+UPDATE routines
+SET "isPublic"=false
+WHERE routines."creatorId"=$1;
+
+`[id])
+console.log('..........routineFalse...',routineFalse);
+const {deleteRoutine} = await client.query(`
+
+DELETE 
+FROM routine_activities
+WHERE "routineId"=$1 AND routines."isPublic"=false;
+
+`[id])
+console.log('........deleteRoutine...',deleteRoutine);
+return (routineFalse, deleteRoutine);
+
+} catch(err) {
+  console.log(err);
 }
+
+}
+
 module.exports = {
   getRoutineById,
   getRoutinesWithoutActivities,
