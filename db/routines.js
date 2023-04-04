@@ -132,7 +132,6 @@ const updateRoutine = async({ id, ...fields }) => {
 }
 //I'm getting this one
 const destroyRoutine = async(id)  => {
-  console.log('id:',id);
   try{
     const {rows: [deleteRoutine]} = await client.query(`
 

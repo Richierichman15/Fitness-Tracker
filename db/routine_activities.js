@@ -41,7 +41,27 @@ try {
   console.log(error);
 }
 }
-async function updateRoutineActivity({ id, ...fields }) {} //I'm doing this one
+async function updateRoutineActivity({ id, ...fields }) {
+  try{
+    const {rows: [update]} = await client.query(`
+    UPDATE routine_activities
+    SET duration=$1, count=$2
+    WHERE routine_activities.id=$3
+    RETURNING *;
+`,[fields.duration, fields.count, id])
+ return update;
+
+  } catch(err){
+    console.log(err);
+  }
+
+
+} 
+
+
+
+
+
 async function destroyRoutineActivity(id) {}
 async function canEditRoutineActivity(routineActivityId, userId) {}
 module.exports = {
