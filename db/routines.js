@@ -132,25 +132,25 @@ const updateRoutine = async({ id, ...fields }) => {
 }
 //I'm getting this one
 const destroyRoutine = async(id)  => {
-  console.log('........id.............',id);
-try{
-const {rows: [routine]} = await client.query(`
+  console.log('id:',id);
+  try{
+    const {rows: [deleteRoutine]} = await client.query(`
 
-DELETE
-FROM routines
-WHERE id=$1 ;
+      DELETE 
+      FROM routine_activities
+      WHERE "routineId"=$1;
 
-`,[id])
-console.log('..........routine...',routine);
-const {rows: [deleteRoutine]} = await client.query(`
+  `,[id])
+    const {rows: [routine]} = await client.query(`
 
-DELETE 
-FROM routine_activities
-WHERE "routineId"=$1;
+      DELETE
+      FROM routines
+      WHERE id=$1 ;
 
-`,[id])
-console.log('........deleteroutine......',deleteRoutine);
-return {routine, deleteRoutine};
+  `,[id])
+
+
+// return {deleteRoutine};
 
 } catch(err) {
   console.log(err);
