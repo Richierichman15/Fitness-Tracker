@@ -41,7 +41,7 @@ try {
   console.log(error);
 }
 }
-async function updateRoutineActivity({ id, ...fields }) {}
+async function updateRoutineActivity({ id, ...fields }) {} //I'm doing this one
 async function destroyRoutineActivity(id) {}
 async function canEditRoutineActivity(routineActivityId, userId) {}
 module.exports = {

@@ -134,23 +134,23 @@ const updateRoutine = async({ id, ...fields }) => {
 const destroyRoutine = async(id)  => {
   console.log('........id.............',id);
 try{
-const {routineFalse} = await client.query(`
+const {rows: [routine]} = await client.query(`
 
-UPDATE routines
-SET "isPublic"=false
-WHERE routines."creatorId"=$1;
+DELETE
+FROM routines
+WHERE id=$1 ;
 
-`[id])
-console.log('..........routineFalse...',routineFalse);
-const {deleteRoutine} = await client.query(`
+`,[id])
+console.log('..........routine...',routine);
+const {rows: [deleteRoutine]} = await client.query(`
 
 DELETE 
 FROM routine_activities
-WHERE "routineId"=$1 AND routines."isPublic"=false;
+WHERE "routineId"=$1;
 
-`[id])
-console.log('........deleteRoutine...',deleteRoutine);
-return (routineFalse, deleteRoutine);
+`,[id])
+console.log('........deleteroutine......',deleteRoutine);
+return {routine, deleteRoutine};
 
 } catch(err) {
   console.log(err);
