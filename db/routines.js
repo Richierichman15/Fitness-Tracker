@@ -1,93 +1,88 @@
-const { attachActivitiesToRoutines, getActivityById } = require("./activities");
+const { attachActivitiesToRoutines } = require("./activities");
 const { getUserByUsername } = require("./users");
 const client = require("./client");
-const createRoutine = async({ creatorId, isPublic, name, goal }) => {
+const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
   try {
-  const {rows: [routine]} = await client.query(`
+    const { rows: [routine] } = await client.query(`
     INSERT INTO routines("creatorId", "isPublic", "name", "goal")
     VALUES($1, $2, $3, $4)
     RETURNING *;
-  `, [ creatorId, isPublic, name, goal])
-  return routine;
-  } catch(err) {
+  `, [creatorId, isPublic, name, goal])
+    return routine;
+  } catch (err) {
     console.log(err);
   }
 }
-const getRoutineById = async(id) => {
+const getRoutineById = async (id) => {
   try {
-    const {rows: [routine]} = await client.query(`
+    const { rows: [routine] } = await client.query(`
     SELECT * FROM routines
     WHERE id=$1;
    `, [id])
     return routine
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
-// gitonga's doing this one
-const getRoutinesWithoutActivities = async() => {
- try{
-  const { rows } = await client.query(`
+const getRoutinesWithoutActivities = async () => {
+  try {
+    const { rows } = await client.query(`
   SELECT * FROM routines;
   `)
-return rows;
- } catch(err){
-  console.log(err);
- }
+    return rows;
+  } catch (err) {
+    console.log(err);
+  }
 }
-//gitonga's doing this one
 async function getAllRoutines() {
-try {
-  const {rows: routines } = await client.query(`
+  try {
+    const { rows: routines } = await client.query(`
   SELECT routines.*, users.username AS "creatorName"
   FROM routines
   JOIN users
   ON routines."creatorId"=users.id;
   `)
-  return attachActivitiesToRoutines(routines)
-} catch(err){
-  console.log(err);
+    return attachActivitiesToRoutines(routines)
+  } catch (err) {
+    console.log(err);
+  }
 }
-}
-const getAllPublicRoutines = async() => {
+const getAllPublicRoutines = async () => {
   try {
-  const {rows: routines} = await client.query(`
+    const { rows: routines } = await client.query(`
    SELECT routines.*, users.username AS "creatorName"
    FROM routines
    JOIN users
    ON routines."creatorId"=users.id
    WHERE "isPublic"=true;
   `)
-  return attachActivitiesToRoutines(routines);
-  } catch(err) {
+    return attachActivitiesToRoutines(routines);
+  } catch (err) {
     console.error(err);
   }
 }
-//i'm doing this one
-const getAllRoutinesByUser = async({ username }) => {
+const getAllRoutinesByUser = async ({ username }) => {
 
-try{
-const user = await getUserByUsername(username);
+  try {
+    const user = await getUserByUsername(username);
 
-const { rows: routines } = await client.query(`
+    const { rows: routines } = await client.query(`
 SELECT routines.*, users.username AS "creatorName"
 FROM routines
 JOIN users
 ON routines."creatorId"=users.id
 WHERE routines."creatorId"=$1;
-`,[user.id])
-// console.log('routines:', routines);
-return attachActivitiesToRoutines(routines);
-  } catch(err) {
+`, [user.id])
+    return attachActivitiesToRoutines(routines);
+  } catch (err) {
     console.error(err);
+  }
 }
-}
-//Gitonga doing this one
-const getPublicRoutinesByUser = async({ username }) => {
+const getPublicRoutinesByUser = async ({ username }) => {
 
-try {
-  const user = await getUserByUsername(username);
-  const { rows: pubRoutines } = await client.query(`
+  try {
+    const user = await getUserByUsername(username);
+    const { rows: pubRoutines } = await client.query(`
   SELECT routines.*, users.username AS "creatorName"
   FROM routines
   JOIN users
@@ -95,19 +90,18 @@ try {
   WHERE routines."creatorId"=$1 AND routines."isPublic"=$2
   
   `, [user.id, true]);
-return attachActivitiesToRoutines(pubRoutines);
-} catch(err){
-  console.log(err);
-}
+    return attachActivitiesToRoutines(pubRoutines);
+  } catch (err) {
+    console.log(err);
+  }
 
 
 
 }
-//I'm getting this oen
-const getPublicRoutinesByActivity = async({ id }) => {
-try{
+const getPublicRoutinesByActivity = async ({ id }) => {
+  try {
 
-const { rows: pubRoutines } = await client.query(`
+    const { rows: pubRoutines } = await client.query(`
 
 SELECT routines.*, activities.name AS "activityName", users.username AS "creatorName"
 FROM routines
@@ -121,89 +115,75 @@ WHERE activities.id=$1 AND routines."isPublic"=true;
 `, [id]);
 
 
-return attachActivitiesToRoutines(pubRoutines);
+    return attachActivitiesToRoutines(pubRoutines);
 
-} catch(err){
-  console.log(err);
+  } catch (err) {
+    console.log(err);
+  }
 }
-}
-//Gitonga's doing this one
-const updateRoutine = async({ id, ...fields }) => {
-try{
+const updateRoutine = async ({ id, ...fields }) => {
+  try {
 
-  if (!fields.name) {
-    const {rows: [newGoal]} = await client.query(`
+    if (!fields.name) {
+      const { rows: [newGoal] } = await client.query(`
       UPDATE routines
       SET goal=$1
       WHERE id=$2  
       RETURNING *;
-    `,[fields.goal, id ]);
+    `, [fields.goal, id]);
 
-    return newGoal;
-  }
+      return newGoal;
+    }
 
-  if (!fields.goal) {
-    const {rows: [newName]} = await client.query(`
+    if (!fields.goal) {
+      const { rows: [newName] } = await client.query(`
     UPDATE routines
     SET name=$1
     WHERE id=$2  
     RETURNING *;
-    `,[fields.name, id]);
-    return newName;
-  }
+    `, [fields.name, id]);
+      return newName;
+    }
 
-  if(!fields.isPublic) {
-    const {rows: [notPublic] } = await client.query(`
+    if (!fields.isPublic) {
+      const { rows: [notPublic] } = await client.query(`
      UPDATE routines
      SET "isPublic"=$1, name=$2, goal=$3
      WHERE id=$4
      RETURNING *;
-    `,[false, fields.name, fields.goal, id]);
-    return notPublic;
+    `, [false, fields.name, fields.goal, id]);
+      return notPublic;
+    }
+
+
+  } catch (err) {
+    console.log(err);
   }
-  //  else {
-  //   const {rows: [all]} = await client.query(`
-  //   UPDATE routines
-  //   SET name=$1, goal=$2
-  //   WHERE id=$3
-  //   RETURNING *;
-    
-  //   `,[fields.name, fields.goal, id]);
-  //   return all;
-  // }
-
-} catch(err){
-  console.log(err);
-}
-
-
-
 
 }
-//I'm getting this one
-const destroyRoutine = async(id)  => {
-  try{
-    const {rows: [deleteRoutine]} = await client.query(`
+
+const destroyRoutine = async (id) => {
+  try {
+    const { rows: [deleteRoutine] } = await client.query(`
 
       DELETE 
       FROM routine_activities
       WHERE "routineId"=$1;
 
-  `,[id])
-    const {rows: [routine]} = await client.query(`
+  `, [id])
+    const { rows: [routine] } = await client.query(`
 
       DELETE
       FROM routines
       WHERE id=$1 ;
 
-  `,[id])
+  `, [id])
 
 
-// return {deleteRoutine};
 
-} catch(err) {
-  console.log(err);
-}
+  } catch (err) {
+    console.log(err);
+  }
 
 }
 
