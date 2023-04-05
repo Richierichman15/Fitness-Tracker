@@ -24,7 +24,6 @@ const getRoutineById = async(id) => {
     console.log(err);
   }
 }
-// gitonga's doing this one
 const getRoutinesWithoutActivities = async() => {
  try{
   const { rows } = await client.query(`
@@ -35,7 +34,6 @@ return rows;
   console.log(err);
  }
 }
-//gitonga's doing this one
 async function getAllRoutines() {
 try {
   const {rows: routines } = await client.query(`
@@ -63,7 +61,7 @@ const getAllPublicRoutines = async() => {
     console.error(err);
   }
 }
-//i'm doing this one
+
 const getAllRoutinesByUser = async({ username }) => {
 try{
 const user = await getUserByUsername(username);
@@ -79,19 +77,74 @@ return attachActivitiesToRoutines(routines);
    console.log(err);
 }
 }
-//Gitonga doing this one
 const getPublicRoutinesByUser = async({ username }) => {
-
+  try {
+    const {rows} = await client.query(`
+    SELECT * FROM "isPublic", activities, username
+    RETURNING []
+    `, [username])
+    console.log(rows);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-//I'm getting this oen
 const getPublicRoutinesByActivity = async({ id }) => {
+  try{
+    const { rows: pubRoutines } = await client.query(`
+    SELECT routines.*, activities.name AS "activityName"
+    FROM routines
+    JOIN routine_activities
+    On routines.id = routine_activities."routineId"
+    JOIN activities
+    ON routine_activities."activityId" = activities.id
+    WHERE activities.id=$1 AND routines."isPublic"=true;
+    `, [id]);
+    return attachActivitiesToRoutines(pubRoutines);
+    } catch(err){
+      console.log(err);
+    }
+    }
 
+
+    `
+    UPDATE routines
+    SET 
+    "isPublic" = $1,
+    name = $2,
+    goal = $3
+    WHERE id=$4
+    RETURNING *;
+    `
+const updateRoutine = async({ id, isPublic, name, goal}) => {
+  let updateQuery = `
+  UPDATE routines
+  SET
+  ` 
+  if(name) {
+    const nameStr = ` name = "${name}",`
+    updateQuery = updateQuery + nameStr 
+
+  }
+
+  if(isPublic !== undefined) {
+    const publicStr = ` "isPublic" = ${isPublic},`
+    updateQuery = updateQuery + publicStr
+  }
+
+  if(goal) {
+    const goalStr = ` goal = "${goal}"`
+    updateQuery = updateQuery + goalStr
+  }
+  updateQuery = updateQuery + ` WHERE id=${id} RETURNING *;`
+  console.log(updateQuery);
+try {
+  const {rows: [updated]} = await client.query(updateQuery)
+  console.log(updated);
+  return updated;
+} catch (error) {
+  console.log(error);
 }
-
-//Gitonga's doing this one
-const updateRoutine = async({ id, ...fields }) => {
-
 }
 
 //I'm getting this one
