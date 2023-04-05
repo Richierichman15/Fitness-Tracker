@@ -65,25 +65,18 @@ async function updateRoutineActivity({ id, ...fields }) {
 
 
 async function destroyRoutineActivity(id) {
-console.log('......id.......',id);
 
 try {
 
- const { rows: [deleted] } = await client.query(`
- SELECT id
- FROM routine_activities
- WHERE "routineId"=$1
- 
- `,[id])
- console.log('deleted..........',deleted);
-
- const { rows: [routine] } = await client.query(`
+ const { rows: [routineActivity] } = await client.query(`
  DELETE
  FROM routine_activities
- WHERE "routineId"=$1 AND routine_activities.id=$2; 
+ WHERE id=$1
+RETURNING *;
+ `, [id])
+console.log('routine......',routineActivity);
 
- `, [id, deleted])
- return routine;
+ return routineActivity;
 
 } catch(err) {
   console.log(err);
@@ -94,22 +87,20 @@ try {
 
 
 async function canEditRoutineActivity(routineActivityId, userId) {
-console.log('routineActivityId......',routineActivityId,'userid...',userId);
+// console.log('routineActivityId......',routineActivityId,'userid...',userId);
 
 
 try{
 
-  const {rows: [routineIdd]} = await client.query(`
-  SELECT "routineId"
+  const {rows: [routineFromRoutineActivities]} = await client.query(`
+  SELECT *
   FROM routine_activities
-  WHERE routine_activities.id=$1;
+  JOIN routines
+  ON routine_activities."routineId"=routines.id
+  AND routine_activities.id=$1;
   `,[routineActivityId])
-  console.log('routineactId...........',routineIdd);
-//get routineId from routineactivityId
-const {rows: [user]} = await client.query(`
-
-
-`)
+console.log('routineId......',routineFromRoutineActivities);
+  return routineFromRoutineActivities.creatorId === userId
 //check if creatorId equals userId
 
 
