@@ -64,7 +64,35 @@ async function updateRoutineActivity({ id, ...fields }) {
 
 
 
-async function destroyRoutineActivity(id) {}
+async function destroyRoutineActivity(id) {
+console.log('......id.......',id);
+
+try {
+
+ const { rows: [deleted] } = await client.query(`
+ SELECT id
+ FROM routine_activities
+ WHERE "routineId"=$1
+ 
+ `,[id])
+ console.log('deleted..........',deleted);
+
+ const { rows: [routine] } = await client.query(`
+ DELETE
+ FROM routine_activities
+ WHERE "routineId"=$1 AND routine_activities.id=$2; 
+
+ `, [id, deleted])
+ return routine;
+
+} catch(err) {
+  console.log(err);
+}
+
+}
+
+
+
 async function canEditRoutineActivity(routineActivityId, userId) {
 console.log('routineActivityId......',routineActivityId,'userid...',userId);
 
