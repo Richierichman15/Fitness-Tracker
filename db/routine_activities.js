@@ -1,5 +1,7 @@
 
 const client = require("./client");
+// const { getAllRoutinesByUser } = require("./routines")
+// const { getUserById } = require("./users");
 const addActivityToRoutine = async({
   routineId,
   activityId,
@@ -63,7 +65,36 @@ async function updateRoutineActivity({ id, ...fields }) {
 
 
 async function destroyRoutineActivity(id) {}
-async function canEditRoutineActivity(routineActivityId, userId) {}
+async function canEditRoutineActivity(routineActivityId, userId) {
+console.log('routineActivityId......',routineActivityId,'userid...',userId);
+
+
+try{
+
+  const {rows: [routineIdd]} = await client.query(`
+  SELECT "routineId"
+  FROM routine_activities
+  WHERE routine_activities.id=$1;
+  `,[routineActivityId])
+  console.log('routineactId...........',routineIdd);
+//get routineId from routineactivityId
+const {rows: [user]} = await client.query(`
+
+
+`)
+//check if creatorId equals userId
+
+
+} catch(err) {
+  console.log(err);
+}
+
+
+
+}
+
+
+
 module.exports = {
   getRoutineActivityById,
   addActivityToRoutine,

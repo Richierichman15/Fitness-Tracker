@@ -129,6 +129,56 @@ return attachActivitiesToRoutines(pubRoutines);
 }
 //Gitonga's doing this one
 const updateRoutine = async({ id, ...fields }) => {
+try{
+
+  if (!fields.name) {
+    const {rows: [newGoal]} = await client.query(`
+      UPDATE routines
+      SET goal=$1
+      WHERE id=$2  
+      RETURNING *;
+    `,[fields.goal, id ]);
+
+    return newGoal;
+  }
+
+  if (!fields.goal) {
+    const {rows: [newName]} = await client.query(`
+    UPDATE routines
+    SET name=$1
+    WHERE id=$2  
+    RETURNING *;
+    `,[fields.name, id]);
+    return newName;
+  }
+
+  if(!fields.isPublic) {
+    const {rows: [notPublic] } = await client.query(`
+     UPDATE routines
+     SET "isPublic"=$1, name=$2, goal=$3
+     WHERE id=$4
+     RETURNING *;
+    `,[false, fields.name, fields.goal, id]);
+    return notPublic;
+  }
+  //  else {
+  //   const {rows: [all]} = await client.query(`
+  //   UPDATE routines
+  //   SET name=$1, goal=$2
+  //   WHERE id=$3
+  //   RETURNING *;
+    
+  //   `,[fields.name, fields.goal, id]);
+  //   return all;
+  // }
+
+} catch(err){
+  console.log(err);
+}
+
+
+
+
 }
 //I'm getting this one
 const destroyRoutine = async(id)  => {
