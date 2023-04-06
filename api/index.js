@@ -3,22 +3,26 @@ const router = express.Router();
 
 // GET /api/health
 // router.get('/health', async (req, res, next) => {
+//   res.send('All is well')
 // });
 
 // ROUTER: /api/users
 const usersRouter = require('./users');
-router.use('/users', usersRouter);
+
+// router.use('/users', usersRouter);
 
 // ROUTER: /api/activities
 const activitiesRouter = require('./activities');
-router.use('/activities', activitiesRouter);
+// router.use('/activities', activitiesRouter);
 
 // ROUTER: /api/routines
 const routinesRouter = require('./routines');
-router.use('/routines', routinesRouter);
+// router.use('/routines', routinesRouter);
 
 // ROUTER: /api/routine_activities
 const routineActivitiesRouter = require('./routineActivities');
-router.use('/routine_activities', routineActivitiesRouter);
+const { app } = require('faker/lib/locales/en');
+const client = require('../db/client');
+// router.use('/routine_activities', routineActivitiesRouter);
 
 module.exports = router;

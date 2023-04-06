@@ -15,7 +15,7 @@ const {
 const { createFakeActivity } = require("../helpers");
 
 xdescribe("DB Activities", () => {
-  describe("createActivity({ name, description })", () => {
+  xdescribe("createActivity({ name, description })", () => {
     it("Creates and returns the new activity", async () => {
       const activityToCreate = {
         name: "Marathon",
@@ -59,7 +59,7 @@ xdescribe("DB Activities", () => {
     });
   });
 
-  describe("updateActivity", () => {
+  xdescribe("updateActivity", () => {
     xit("Updates name without affecting the ID. Returns the updated Activity.", async () => {
       const fakeActivity = await createFakeActivity(
         "Baseball",

@@ -14,12 +14,12 @@ app.use(bodyParser.json());
 
 const { router } = require('./api/index.js');
 
-app.use('/api', router)
+// app.use('/api', router)
 
-// app.use('*', (error, res, req, next) => {
-//     res.status(404);
-//     res.send({ error: 'route not found' })
-// });
+app.use('*', (error, res, req, next) => {
+    res.status(404);
+    res.send({ error: 'route not found' })
+});
 
 
 module.exports = app;
