@@ -23,6 +23,11 @@ console.log('req.body......',req.body);
 
       if (req.body.password.length < 8){
         console.log('ya password too short');
+        res.send({
+            message: "Password Too Short!",
+            error: "Password Length Error",
+            name: "PasswordLengthError"
+        })
       }
     
 
@@ -31,13 +36,13 @@ console.log('req.body......',req.body);
         password,
       });
   console.log('..........user....:',user);
-    console.log('.....password', password);
+    console.log('....req.password.length', req.body.password.length);
   const token = req.body.password
   
       res.send({ message: "You're logged in!", "token": token, "user": user });
     } catch ({ name, message }) {
       next({ name, message })
-    }
+    }   
   });
 // POST /api/users/login
 router.post('/login', async (req, res) => {
