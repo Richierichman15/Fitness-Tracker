@@ -8,23 +8,30 @@ router.post('/register', async (req, res, next) => {
     const { username, password } = req.body;
 console.log('req.body......',req.body);
     try {
-      const _user = await getUserByUsername(username);
+      const _user = await getUserByUsername(req.body.username);
   
       if (_user) {
-        next({        
+        console.log('DUPLICATE USER>>>>>>>>>>>>>');
+        console.log("........useruser.....:",_user);
+        res.send({    
+          message: `User ${req.body.username} is already taken.`,    
           error: "Duplicate user",
-          message: 'A user by that name already exists',
           name: 'UserExistsError'
          
         });
       }
-  console.log("........useruser.....:",_user);
+
+      if (req.body.password.length < 8){
+        console.log('ya password too short');
+      }
+    
+
       const user = await createUser({
         username,
         password,
       });
   console.log('..........user....:',user);
-    console.log('.....req body password', req.body.password);
+    console.log('.....password', password);
   const token = req.body.password
   
       res.send({ message: "You're logged in!", "token": token, "user": user });

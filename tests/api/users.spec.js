@@ -118,7 +118,7 @@ describe("/api/users", () => {
       );
     });
 
-    xit("returns error if password is less than 8 characters.", async () => {
+    it("returns error if password is less than 8 characters.", async () => {
       // Create some user data with a password with 7 characters
       const newUserShortPassword = {
         username: faker.internet.userName(),
