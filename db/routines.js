@@ -1,3 +1,5 @@
+const { attachActivitiesToRoutines } = require("./activities");
+const { getUserByUsername } = require("./users");
 const client = require("./client");
 const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
   try {
@@ -152,7 +154,6 @@ const destroyRoutine = async (id) => {
       FROM routines
       WHERE id=$1 ;
   `, [id])
-    return(deleteRoutine,routine)
   } catch (err) {
     console.log(err);
   }

@@ -55,10 +55,6 @@ async function createTables() {
     console.log(err);
   }
 }
-
-  console.log('Finished constructing tables!');
-
-
 /* 
 
 DO NOT CHANGE ANYTHING BELOW. This is default seed data, and will help you start testing, before getting to the tests. 
