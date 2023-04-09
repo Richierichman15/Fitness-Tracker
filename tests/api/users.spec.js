@@ -134,7 +134,7 @@ describe("/api/users", () => {
   });
 
   describe("POST /api/users/login", () => {
-    xit("Logs in the user. Requires username and password, and verifies that hashed login password matches the saved hashed password.", async () => {
+    it("Logs in the user. Requires username and password, and verifies that hashed login password matches the saved hashed password.", async () => {
       // Create some fake user data
       const userData = {
         username: faker.internet.userName(),
