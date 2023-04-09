@@ -6,7 +6,7 @@ router.get('/', async (req, res) => {
    
        
         const newUser = await getAllRoutines()
-        console.log('getallrountines returns.....', newUser)
+        // console.log('getallrountines returns.....', newUser)
         res.send(newUser);
 
 });
