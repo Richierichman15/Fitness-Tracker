@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const { createUser, getUserById, getUserByUsername } = require("../db/users")
+const { getAllRoutinesByUser, getAllPublicRoutines } = require("../db/routines")
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -91,8 +92,38 @@ router.get('/me', async (req, res, next) => {
 });
 
 // GET /api/users/:username/routines
-router.get('/', async (req, res) => {
-    res.send('Welcome to users')
+router.get('/:username/routines', async (req, res) => {
+  
+    try {  
+        const header = req.headers.authorization;
+        console.log('header........',header);
+      
+console.log('req.params...........',req.params.username);
+        if (header) {
+        const token = req.headers.authorization.split(' ')[1];
+        const verified = jwt.verify(token, SECRET_KEY);
+        console.log('VERIFIED>>>>>>>>>>>>>>>,',verified);
+        if (verified.username) {
+            const getUser = await getUserByUsername(req.params.username)
+            console.log('GETUSER............',getUser.username);
+            const getRoutines = await getAllRoutinesByUser(getUser)
+            console.log('getroutines...........',getRoutines);
+            res.send(getRoutines)
+        } 
+        if (verified.username != req.params.username) {
+
+
+            const getUser = await getUserByUsername(req.params.username)
+            console.log('GETUSER222............',getUser.username);
+            const getRoutines = await getAllPublicRoutines(getUser)
+            console.log('getroutines2222...........',getRoutines);
+            res.send(getRoutines)
+        }
+        }
+ 
+    } catch(err) {
+        console.log(err);
+    }
 });
 
 
