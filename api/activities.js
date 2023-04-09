@@ -1,5 +1,5 @@
 const express = require('express');
-const { getActivityById } = require('../db/activities');
+const { getActivityById, getAllActivities } = require('../db/activities');
 const { getPublicRoutinesByActivity } = require('../db/routines');
 const router = express.Router();
 
@@ -26,18 +26,19 @@ try {
 })
 
 // GET /api/activities
-// router.get('/', (res, req) => {
-
-//     try {
+router.get('/', async (req, res) => {
     
-//     } catch(err){
-//         console.log(err)
-//     }
+    try {
+    const activities = await getAllActivities();
+    res.send(activities);
+    } catch(err){
+        console.log(err)
+    }
     
-//     })
+    })
 
 // POST /api/activities
-// router.get('/', (res, req) => {
+// router.get('/', (req, res) => {
 
 //     try {
     
@@ -48,7 +49,7 @@ try {
 //     })
 
 // PATCH /api/activities/:activityId
-// router.get('/:activityId', (res, req) => {
+// router.get('/:activityId', (req, res) => {
 
 //     try {
     
