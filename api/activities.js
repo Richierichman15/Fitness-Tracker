@@ -7,9 +7,17 @@ const router = express.Router();
 router.get('/:activityId/routines', async (req, res) => {
     // console.log('req.param..............',req.params);
 try {
+
+
  const activity = await getActivityById(req.params.activityId);
+ if (!activity) {
+    res.send({
+        error:"I am error",
+        message: `Activity ${req.params.activityId} not found`,
+        name: "NoActivity"
+    })
+ }
  const routine = await getPublicRoutinesByActivity(activity);
-//  console.log('routines.........',routine);
  res.send(routine);
 } catch(err){
     console.log(err)
