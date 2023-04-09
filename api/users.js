@@ -3,7 +3,8 @@ const express = require("express");
 const router = express.Router();
 const { createUser, getUserById, getUserByUsername } = require("../db/users")
 const bcrypt = require('bcrypt');
-const SALT_COUNT = 10
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // POST /api/users/register
 router.post('/register', async (req, res, next) => {
@@ -46,11 +47,18 @@ router.post('/login', async (req, res) => {
 
 try {
  const getName = await getUserByUsername(username);
-// console.log('input passwordHash.......',passwordHash);
 const passwordHash = await bcrypt.compare(password, getName.password)
  if (passwordHash === true){
-    res.send ({ message: "you're logged in!"});
- }
+    const userInfo = { id: getName.id, username: getName.username };
+    const SECRET_KEY = process.env.JWT_SECRET;
+    const token = jwt.sign(userInfo, SECRET_KEY)
+    res.send ({ message: "you're logged in!", token: token, user: userInfo});
+    }
+
+
+
+
+
 } catch(err) {
     console.log(err);
 }
