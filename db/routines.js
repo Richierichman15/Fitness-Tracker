@@ -144,12 +144,14 @@ const updateRoutine = async ({ id, ...fields }) => {
 }
 const destroyRoutine = async (id) => {
   try {
-    const { rows: [deleteRoutine] } = await client.query(`
-      DELETE
+    await client.query(`
+
+      DELETE 
       FROM routine_activities
       WHERE "routineId"=$1;
   `, [id])
-    const { rows: [routine] } = await client.query(`
+    await client.query(`
+
       DELETE
       FROM routines
       WHERE id=$1 ;
