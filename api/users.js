@@ -4,6 +4,7 @@ const router = express.Router();
 const { createUser, getUserById, getUserByUsername } = require("../db/users")
 const { getAllRoutinesByUser, getPublicRoutinesByUser } = require("../db/routines")
 const bcrypt = require('bcrypt');
+
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
