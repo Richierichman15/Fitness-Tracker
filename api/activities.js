@@ -1,5 +1,5 @@
 const express = require('express');
-const { getActivityById, getAllActivities, createActivity, getActivityByName } = require('../db/activities');
+const { getActivityById, getAllActivities, createActivity, getActivityByName, updateActivity } = require('../db/activities');
 const { getPublicRoutinesByActivity } = require('../db/routines');
 const router = express.Router();
 
@@ -48,7 +48,6 @@ router.post('/', async (req, res) => {
         const header = req.headers.authorization;
         const { name, description } = req.body
         const allActivities = await getActivityByName(name);
-        console.log('.....allactivites......',allActivities);
         if (allActivities) {
             res.send({message: `An activity with name ${name} already exists`, error: "activityExists", name: "activityExists"});
         }
@@ -68,15 +67,33 @@ router.post('/', async (req, res) => {
     })
 
 // PATCH /api/activities/:activityId
-// router.get('/:activityId', (req, res) => {
+router.patch('/:activityId', async (req, res) => {
+    const { activityId }= req.params;
+    console.log('activityid...............', req.params);
+    const { name, description } = req.body;
+    const header = req.headers.authorization;
+    console.log('.........body...', req.body);
 
-//     try {
+    try {
+        if (header) {
+
+            const token = req.headers.authorization.split(' ')[1];
+            const verified = jwt.verify(token, SECRET_KEY);
+
+            if (verified) {
+                console.log('.........made it here.............activiID',activityId);
+                const update = await updateActivity(activityId, {name, description});
+                console.log('........update.......', update);
+                res.send({ description: description, id: activityId, name: name})
+             }
+        }
+        
+
+    } catch(err) {
+        console.log(err)
+    }
     
-//     } catch(err){
-//         console.log(err)
-//     }
-    
-    // })
+    })
 module.exports = router;
 
 
