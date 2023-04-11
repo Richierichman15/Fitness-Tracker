@@ -69,10 +69,10 @@ router.post('/', async (req, res) => {
 // PATCH /api/activities/:activityId
 router.patch('/:activityId', async (req, res) => {
     const { activityId }= req.params;
-    console.log('activityid...............', req.params);
+    // console.log('activityid...............', req.params);
     const { name, description } = req.body;
     const header = req.headers.authorization;
-    console.log('.........body...', req.body);
+    // console.log('.........body...', req.body);
 
     try {
         if (header) {
@@ -81,9 +81,9 @@ router.patch('/:activityId', async (req, res) => {
             const verified = jwt.verify(token, SECRET_KEY);
 
             if (verified) {
-                console.log('.........made it here.............activiID',activityId);
+                // console.log('.........made it here.............activiID',activityId);
                 const update = await updateActivity(activityId, {name, description});
-                console.log('........update.......', update);
+                // console.log('........update.......', update);
                 res.send({ description: description, id: activityId, name: name})
              }
         }
