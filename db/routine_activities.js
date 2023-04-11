@@ -74,7 +74,6 @@ try {
  WHERE id=$1
 RETURNING *;
  `, [id])
-console.log('routine......',routineActivity);
 
  return routineActivity;
 
@@ -99,7 +98,6 @@ try{
   ON routine_activities."routineId"=routines.id
   AND routine_activities.id=$1;
   `,[routineActivityId])
-console.log('routineId......',routineFromRoutineActivities);
   return routineFromRoutineActivities.creatorId === userId
 //check if creatorId equals userId
 

@@ -9,7 +9,6 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 // GET /api/activities/:activityId/routines
 router.get('/:activityId/routines', async (req, res) => {
-    // console.log('req.param..............',req.params);
 try {
 
 
@@ -68,11 +67,9 @@ router.post('/', async (req, res) => {
 
 // PATCH /api/activities/:activityId
 router.patch('/:activityId', async (req, res) => {
-    const { activityId }= req.params;
-    // console.log('activityid...............', req.params);
+    const activityId = +req.params.activityId;
     const { name, description } = req.body;
     const header = req.headers.authorization;
-    // console.log('.........body...', req.body);
 
     try {
         if (header) {
@@ -81,9 +78,7 @@ router.patch('/:activityId', async (req, res) => {
             const verified = jwt.verify(token, SECRET_KEY);
 
             if (verified) {
-                // console.log('.........made it here.............activiID',activityId);
-                const update = await updateActivity(activityId, {name, description});
-                // console.log('........update.......', update);
+                 await updateActivity(activityId, {name, description});
                 res.send({ description: description, id: activityId, name: name})
              }
         }
