@@ -1,6 +1,7 @@
 const { attachActivitiesToRoutines } = require("./activities");
 const { getUserByUsername } = require("./users");
 const client = require("./client");
+
 const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
   try {
     const { rows: [routine] } = await client.query(`

@@ -32,7 +32,7 @@ router.post('/register', async (req, res, next) => {
         })
       }
     
-
+      if (!_user) {
       const user = await createUser({
         username,
         password,
@@ -40,6 +40,7 @@ router.post('/register', async (req, res, next) => {
   const token = req.body.password
   
       res.send({ message: "You're logged in!", "token": token, "user": user });
+    }
     } catch ({ name, message }) {
       next({ name, message })
     }   
@@ -52,9 +53,11 @@ try {
  const getName = await getUserByUsername(username);
 const passwordHash = await bcrypt.compare(password, getName.password)
  if (passwordHash === true){
+
     const userInfo = { id: getName.id, username: getName.username }; 
     const token = jwt.sign(userInfo, SECRET_KEY)
     res.send ({ message: "you're logged in!", token: token, user: userInfo});
+
     }
 
 } catch(err) {
@@ -64,7 +67,6 @@ const passwordHash = await bcrypt.compare(password, getName.password)
 });
 // GET /api/users/me
 router.get('/me', async (req, res, next) => {
- 
     try {   
         const header = req.headers.authorization;
  
@@ -94,7 +96,6 @@ router.get('/me', async (req, res, next) => {
 
 // GET /api/users/:username/routines
 router.get('/:username/routines', async (req, res) => {
-  
     try {  
         const header = req.headers.authorization;
       

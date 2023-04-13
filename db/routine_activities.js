@@ -27,17 +27,21 @@ try {
       FROM routine_activities
       WHERE id = $1
   `, [id]);
+
   return routineActivity;
 } catch (error) {
   console.log(error);
 }
 }
 async function getRoutineActivitiesByRoutine({ id }) {
+  if (!id) {
+    return
+  }
 try {
   const {rows} = await client.query(`
     SELECT * FROM routine_activities
-    WHERE "routineId" = ${id}
-  `);
+    WHERE "routineId" =$1
+  `,[id]);
   return rows;
 } catch (error) {
   console.log(error);

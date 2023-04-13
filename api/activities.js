@@ -20,8 +20,11 @@ try {
         name: "NoActivity"
     })
  }
+ if(activity){
  const routine = await getPublicRoutinesByActivity(activity);
  res.send(routine);
+ }
+
 } catch(err){
     console.log(err)
 }
@@ -70,7 +73,15 @@ router.patch('/:activityId', async (req, res) => {
     const activityId = +req.params.activityId;
     const { name, description } = req.body;
     const header = req.headers.authorization;
+    const getAct = await getActivityByName(name);
+    const getId = await getActivityById(activityId);
+    if (getAct){
+       return res.send({ error: "I am error", message: `An activity with name ${name} already exists`, name: "activityAlreadyExists"})
+    }
 
+    if (!getId) {
+        return res.send({ error: "I am error", message: `Activity ${activityId} not found`, name: "noActivityToUpdate"})
+    }
     try {
         if (header) {
 
