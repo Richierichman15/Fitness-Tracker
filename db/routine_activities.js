@@ -21,6 +21,7 @@ const addActivityToRoutine = async({
   }
 }
 async function getRoutineActivityById(id) {
+
 try {
   const {rows: [routineActivity]} = await client.query(`
       SELECT *
@@ -34,9 +35,7 @@ try {
 }
 }
 async function getRoutineActivitiesByRoutine({ id }) {
-  if (!id) {
-    return
-  }
+
 try {
   const {rows} = await client.query(`
     SELECT * FROM routine_activities

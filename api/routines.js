@@ -25,22 +25,15 @@ router.post('/', async (req, res) => {
         try {
                 const header = req.headers.authorization
                 const { isPublic, name, goal } = req.body
-console.log('header.........',header);
                 if (header) {
                         const token = req.headers.authorization.split(' ')[1];
                         const verified = jwt.verify(token, SECRET_KEY); 
-console.log('token',token);
-                        console.log('verified.1............',verified.username, 'name:',name);
                         if (verified.id) {
-                                console.log('verified.2...........',verified, 'veri.id',verified.id, 'veri.name,',verified.name,'name',name);
-                            await createRoutine(verified.id , isPublic, name, goal); //
+                            await createRoutine(verified.id , isPublic, name, goal); /////this one
                             res.send({ creatorId: verified.id, isPublic: isPublic, name: name, goal: goal} )
-                        } else {
-                                res.send({message: "You must be logged in to perform this action", error: "I am error", name: "mustLogin"})
-                        }
+                        } 
                 }
                 if (!header) {
-                        console.log('no header.....',header);
                         res.send({message: "You must be logged in to perform this action", error: "I am error", name: "mustLogin"})
                         }
 
@@ -58,44 +51,69 @@ console.log('token',token);
 //         } catch(err) {
 //                 console.log(err);
 //         }
-// DELETE /api/routines/:routineId
-// router.delete('/', async (req, res) => {
+
+
+//DELETE /api/routines/:routineId
+// router.delete('/:routineId', async (req, res) => {
+
 //         try {
-        
+//         const routineId = await getRoutineById(req.params.routineId)
+//         console.log('routineId.......',routineId);
+
+
+
+
+
+
+
 //         } catch(err) {
 //                 console.log(err);
 //         }
-// POST /api/routines/:routineId/activities
-// router.post('/:routineId/activities', async (req, res) => {
-//         try {
-//                 const header = req.headers.authorization
-//                 const routineId = req.params.routineId
-//                 const { activityId, count, duration } = req.body
-//                 console.log('routineId.........1',routineId);
-//                 const check = await getRoutineActivitiesByRoutine(+routineId)
-//                 console.log('............routine.no if...3',check);
-//                 if (header) {
-//                         const token = req.headers.authorization.split(' ')[1];
-//                         const verified = jwt.verify(token, SECRET_KEY); 
-
-//                         if (check){
-//                                 res.send({ 
-//                                         error: "I am error",
-//                                         message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
-//                                         name: "duplicateActivity"
-//                                         })
-//                         }
-
-//                         if (verified.id) {
-//                             await addActivityToRoutine(routineId, activityId, count, duration );
-//                             res.send({ routineId: +routineId, activityId: activityId, count: count, duration: duration })
-//                         }
-//                 } else {res.send({message: "You must be logged in to perform this action", error: "I am error", name: "mustLogin"})}
-
-//         } catch(err) {
-//         console.log(err);
-//         }
-
-
 // })
+
+// POST /api/routines/:routineId/activities
+router.post('/:routineId/activities', async (req, res) => {
+        const header = req.headers.authorization 
+        const { routineId }= req.params 
+        const { activityId, count, duration } = req.body
+
+        try {
+
+                const routineExists = await getRoutineActivitiesByRoutine({ id: routineId })
+                const routineActivity = routineExists[0]
+
+                if (routineExists.length) {
+                        const getRAID = await getRoutineActivityById(routineActivity.id)
+               
+                        if (header && getRAID){
+                                return res.send({ 
+                                        error: "I am error",
+                                        message: `Activity ID ${activityId} already exists in Routine ID ${routineId}`,
+                                        name: "duplicateActivity"
+                                        })
+                        }
+                  }
+
+                if (header) {
+                        console.log('no match in database, creating routine.');
+                        const token = req.headers.authorization.split(' ')[1];
+                        const verified = jwt.verify(token, SECRET_KEY); 
+                        
+
+
+                        if (verified.id) {
+                            await addActivityToRoutine(routineId, activityId, count, duration );
+                            res.send({ routineId: +routineId, activityId: activityId, count: count, duration: duration })
+                        }
+
+
+                }
+                
+
+        } catch(err) {
+        console.log(err);
+        }
+
+
+})
 module.exports = router;
