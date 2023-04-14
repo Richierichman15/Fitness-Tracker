@@ -3,8 +3,10 @@ const express = require("express");
 const router = express.Router();
 const { createUser, getUserById, getUserByUsername } = require("../db/users")
 const { getAllRoutinesByUser, getPublicRoutinesByUser } = require("../db/routines")
-const bcrypt = require('bcrypt');
 
+const { requireUser } = require('./utils');
+
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -36,9 +38,15 @@ router.post('/register', async (req, res, next) => {
       const user = await createUser({
         username,
         password,
-      });
-  const token = req.body.password
+      });                           //will need to change below to use requireUser
   
+  const token = jwt.sign({
+    id: user.id,
+    username
+  }, process.env.JWT_SECRET, {
+    expiresIn: '1w'
+  });
+
       res.send({ message: "You're logged in!", "token": token, "user": user });
     }
     } catch ({ name, message }) {
@@ -63,20 +71,17 @@ const passwordHash = await bcrypt.compare(password, getName.password)
 } catch(err) {
     console.log(err);
 }
-
 });
 // GET /api/users/me
 router.get('/me', async (req, res, next) => {
     try {   
         const header = req.headers.authorization;
- 
         if (!header) { 
             res.status(401).send({
                 error:"I am error",
                 message : "You must be logged in to perform this action",
                 name: "Unauthorized"
             });
-            // res.send('Unauthorized'); 
         }
 
         if (header) {

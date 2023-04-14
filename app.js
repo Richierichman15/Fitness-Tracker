@@ -16,16 +16,14 @@ app.use(bodyParser.json());
 
 const client = require('./db/client');
 
-client.connect();
-
 app.use('/api', apiRouter);
 
+app.use('*', (req, res) => {
+  res.status(404).send({ message: 'route not found' })
+ 
+})
 
-app.get('/', (req, res) => {
-    res.send('Nothing here');
-  });
-
-//// app.use('/', (req, res));
+client.connect()
 
 
 module.exports = app;

@@ -80,7 +80,7 @@ router.delete('/:routineActivityId', async (req, res) => {
                     activityId: id,
                     count: count,
                     duration: duration,
-                    id: id,
+                    id: +routineActivityId,
                     routineId: routineId })
             }
 
