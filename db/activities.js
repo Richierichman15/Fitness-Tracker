@@ -3,7 +3,6 @@ const client = require('./client');
 async function createActivity({ name, description }) {
   // return the new activity
   if (!name || !description){
-    // console.log('No name or description given');
     return;
   }
   try {
