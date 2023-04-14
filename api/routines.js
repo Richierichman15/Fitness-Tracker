@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { getAllRoutines, createRoutine, getRoutineById, getPublicRoutinesByActivity, getAllPublicRoutines } = require('../db/routines')
-const { addActivityToRoutine, getRoutineActivitiesByRoutine, getRoutineActivityById } = require('../db/routine_activities')
+const { createRoutine,
+        getRoutineById,
+        getAllPublicRoutines,
+        destroyRoutine 
+        } = require('../db/routines')
+
+const { addActivityToRoutine,
+        getRoutineActivitiesByRoutine,
+        getRoutineActivityById,destroyRoutineActivity
+         } = require('../db/routine_activities')
+
 const jwt = require('jsonwebtoken');
-const { getActivityById } = require('../db');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -34,7 +42,10 @@ router.post('/', async (req, res) => {
                         } 
                 }
                 if (!header) {
-                        res.send({message: "You must be logged in to perform this action", error: "I am error", name: "mustLogin"})
+                        res.send({message: "You must be logged in to perform this action",
+                        error: "I am error",
+                        name: "mustLogin"
+                        })
                         }
 
         } catch(err) {
@@ -54,22 +65,56 @@ router.post('/', async (req, res) => {
 
 
 //DELETE /api/routines/:routineId
-// router.delete('/:routineId', async (req, res) => {
+router.delete('/:routineId', async (req, res) => {
+        const header = req.headers.authorization 
 
-//         try {
-//         const routineId = await getRoutineById(req.params.routineId)
-//         console.log('routineId.......',routineId);
+        try {
+
+        const routineId = await getRoutineById(req.params.routineId)
+
+        if (header) {
+
+                const token = req.headers.authorization.split(' ')[1];
+                const verified = jwt.verify(token, SECRET_KEY); 
+                
+                if (verified.id === routineId.creatorId) {
+                        console.log('users match');
+                        
+
+                        const routineExists = await getRoutineActivitiesByRoutine(routineId)
+                        const routineActivity = routineExists
+                        const routineActivityId = await getRoutineActivityById(routineActivity.id)
+                        await destroyRoutineActivity(routineActivityId)
+                        await destroyRoutine(routineId.id)
+   
+                    res.send({
+                        id: routineId.id,
+                        isPublic: routineId.isPublic,
+                        goal: routineId.goal,
+                        name: routineId.name,
+                        creatorId: routineId.creatorId
+                        })
+                } 
+                
+                if (verified.id != routineId.id) {
+                        res.status(403).send({message: `User ${verified.username} is not allowed to delete ${routineId.name}`,
+                        error: "I am error",
+                        name: 'unauthorizedUser'
+                        })
+                        
+                }
+
+
+        }
 
 
 
 
-
-
-
-//         } catch(err) {
-//                 console.log(err);
-//         }
-// })
+        
+        } catch(err) {
+                console.log(err);
+        }
+})
 
 // POST /api/routines/:routineId/activities
 router.post('/:routineId/activities', async (req, res) => {
@@ -95,15 +140,16 @@ router.post('/:routineId/activities', async (req, res) => {
                   }
 
                 if (header) {
-                        console.log('no match in database, creating routine.');
                         const token = req.headers.authorization.split(' ')[1];
                         const verified = jwt.verify(token, SECRET_KEY); 
                         
-
-
                         if (verified.id) {
                             await addActivityToRoutine(routineId, activityId, count, duration );
-                            res.send({ routineId: +routineId, activityId: activityId, count: count, duration: duration })
+                            res.send({ routineId: +routineId,
+                                activityId: activityId,
+                                count: count,
+                                duration: duration
+                                 })
                         }
 
 
