@@ -3,103 +3,90 @@ const { getActivityById, getAllActivities, createActivity, getActivityByName, up
 const { getPublicRoutinesByActivity } = require('../db/routines');
 const router = express.Router();
 
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const SECRET_KEY = process.env.JWT_SECRET;
-
-// GET /api/activities/:activityId/routines
 router.get('/:activityId/routines', async (req, res) => {
-try {
+    try {
 
+        const activity = await getActivityById(req.params.activityId);
+        
+        if (!activity) {
+            res.send({
+                error: "I am error",
+                message: `Activity ${req.params.activityId} not found`,
+                name: "NoActivity"
+            })
+        }
+        if (activity) {
+            const routine = await getPublicRoutinesByActivity(activity);
+            res.send(routine);
+        }
 
- const activity = await getActivityById(req.params.activityId);
- if (!activity) {
-    res.send({
-        error:"I am error",
-        message: `Activity ${req.params.activityId} not found`,
-        name: "NoActivity"
-    })
- }
- if(activity){
- const routine = await getPublicRoutinesByActivity(activity);
- res.send(routine);
- }
-
-} catch(err){
-    console.log(err)
-}
+    } catch (err) {
+        console.log(err)
+    }
 
 })
 
 // GET /api/activities
 router.get('/', async (req, res) => {
-    
+
     try {
-    const activities = await getAllActivities();
-    res.send(activities);
-    } catch(err){
+        const activities = await getAllActivities();
+        res.send(activities);
+    } catch (err) {
         console.log(err)
     }
-    
-    })
+
+})
 
 // POST /api/activities
 router.post('/', async (req, res) => {
 
     try {
-        const header = req.headers.authorization;
         const { name, description } = req.body
         const allActivities = await getActivityByName(name);
-        if (allActivities) {
-            res.send({message: `An activity with name ${name} already exists`, error: "activityExists", name: "activityExists"});
-        }
-        if (header && !allActivities) {
 
-            const token = req.headers.authorization.split(' ')[1];
-            const verified = jwt.verify(token, SECRET_KEY);
-            if (verified.username ) {
-                await createActivity(name, description);
-                res.send({ description: req.body.description, name: req.body.name})
-            }
+        if (allActivities) {
+            res.send({ message: `An activity with name ${name} already exists`, error: "activityExists", name: "activityExists" });
         }
-    } catch(err){
+
+        if (req.user && !allActivities) {
+                await createActivity(name, description);
+                res.send({ description: req.body.description, name: req.body.name })
+            // }
+        }
+
+    } catch (err) {
         console.log(err)
     }
-    
-    })
+
+})
 
 // PATCH /api/activities/:activityId
 router.patch('/:activityId', async (req, res) => {
     const activityId = +req.params.activityId;
-    const { name, description } = req.body;
-    const header = req.headers.authorization;
+    const { name, description } = req.body; 
     const getAct = await getActivityByName(name);
     const getId = await getActivityById(activityId);
-    if (getAct){
-       return res.send({ error: "I am error", message: `An activity with name ${name} already exists`, name: "activityAlreadyExists"})
+
+    if (getAct) {
+        return res.send({ error: "I am error", message: `An activity with name ${name} already exists`, name: "activityAlreadyExists" })
     }
 
     if (!getId) {
-        return res.send({ error: "I am error", message: `Activity ${activityId} not found`, name: "noActivityToUpdate"})
+        return res.send({ error: "I am error", message: `Activity ${activityId} not found`, name: "noActivityToUpdate" })
     }
     try {
-        if (header) {
+        if (req.user) {
 
-            const token = req.headers.authorization.split(' ')[1];
-            const verified = jwt.verify(token, SECRET_KEY);
+                      await updateActivity(activityId, { name, description });
+                res.send({ description: description, id: activityId, name: name })
+                }
 
-            if (verified) {
-                 await updateActivity(activityId, {name, description});
-                res.send({ description: description, id: activityId, name: name})
-             }
-        }
-        
-
-    } catch(err) {
+    } catch (err) {
         console.log(err)
     }
-    
-    })
+
+})
 module.exports = router;
 
 
