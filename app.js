@@ -18,11 +18,11 @@ const client = require('./db/client');
 
 client.connect();
 
-app.use('/api', apiRouter);
+// app.use('/api', apiRouter);
 
 
-app.get('/', (req, res) => {
-    res.send('Nothing here');
+app.get('/api/gamer', (req, res) => {
+    res.json({username: 'ted', gamerid: 1 });
   });
 
 //// app.use('/', (req, res));

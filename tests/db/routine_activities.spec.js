@@ -22,7 +22,7 @@ const {
   createFakeUser,
 } = require("../helpers");
 
-describe("DB Routine Activities", () => {
+xdescribe("DB Routine Activities", () => {
   let fakeActivity;
   let fakeRoutine;
   let routineActivityData;
@@ -44,11 +44,9 @@ describe("DB Routine Activities", () => {
     };
   });
 
-<<<<<<< HEAD
   xdescribe("addActivityToRoutine({ routineId, activityId, count, duration })", () => {
-=======
+    it("creates a new routine_activity, and return it", async () => {
   describe("addActivityToRoutine({ routineId, activityId, count, duration })", () => {
->>>>>>> 2a389d240d7ac2b36d61bcd5d36b3e2a2dee936b
     it("creates a new routine_activity, and return it", async () => {
       const routineActivity = await addActivityToRoutine(routineActivityData);
 

@@ -5,9 +5,10 @@ const { getRoutineById, getRoutinesWithoutActivities, getAllRoutines, getAllPubl
 // GET /api/routines
 router.get('/routines', async(req, res, next) => {
     res.send('Loading routines...');
+    const { id } = req.body.iq
     try {
         const getPublicRoutines = await getAllPublicRoutines(req.body);
-        const getPublicActivity = await getPublicRoutinesByActivity(req.body);
+        const getPublicActivity = await getPublicRoutinesByActivity(req.body.id);
         res.send(getPublicRoutines);
         res.send(getPublicActivity);
     } catch (error) {
@@ -15,6 +16,10 @@ router.get('/routines', async(req, res, next) => {
     }
 })
 // POST /api/routines
+router.post('/routines', async(req, res, next) => {
+    res.send('Loading post...')
+})
+
 
 // PATCH /api/routines/:routineId
 
