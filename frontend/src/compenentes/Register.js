@@ -1,19 +1,19 @@
 import React, { useState } from "react"
 
-const Register = (props) => {
+ export const Register = (props) => {
     const { email, setEmail } = useState('');
     const { password, SetPassword } = useState('');
     const { name, setName } = useState('');
     const { username, setUsername } = useState('');
 
-    const sumbitted = () => {
-        e.preventDefault()
-    }
+    // const sumbitted = () => {
+    //     e.preventDefault()
+    // }
 
     return(
         <div className="auth-container">
             <h2>Register</h2>
-         <form className="register-form" onSubmit={sumbitted}>
+         <form className="register-form">
             <label htmlFor='name'>Full Name</label>
             <input value={name} name='name' placeholder="Full Name" id="name"></input>
             <label htmlFor='email'>Email</label>
@@ -29,4 +29,3 @@ const Register = (props) => {
     )
 }
 
-export default Register

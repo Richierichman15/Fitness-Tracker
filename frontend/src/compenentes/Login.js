@@ -7,9 +7,9 @@ export const Login = (props) => {
     const { pass, SetPass } = useState('');
     const navigate = useNavigate();
 
-    const sumbitted = () => {
-        e.preventDefault()
-    }
+    // const sumbitted = () => {
+    //     e.preventDefault()
+    // }
 
     const BASE_URL = "http:/localhost:4000"
 
@@ -44,7 +44,7 @@ export const Login = (props) => {
     return(
         <div className='auth-container'>
             <h2>Login</h2>
-        <form className='login-form' onSubmit={sumbitted}>
+        <form className='login-form'>
             <label htmlFor='email'>Email</label>
             <input value={email} type="email" placeholder="example@gmail.com" id='email' name='email'></input>
             <label htmlFor='username'>Username</label>
