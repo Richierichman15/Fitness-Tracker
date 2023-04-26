@@ -112,5 +112,4 @@ router.get('/:username/routines', async (req, res) => {
   }
 });
 
-
 module.exports = router;

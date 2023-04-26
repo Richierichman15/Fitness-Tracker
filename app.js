@@ -29,5 +29,4 @@ app.use((error, req, res) => {
   res.send({ error: error.message });
 })
 
-
 module.exports = app;

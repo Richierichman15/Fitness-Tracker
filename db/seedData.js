@@ -235,7 +235,6 @@ async function rebuildDB() {
     throw error
   }
 }
-
 module.exports = {
   rebuildDB,
   dropTables,
