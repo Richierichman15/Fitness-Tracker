@@ -187,7 +187,6 @@ router.post('/:routineId/activities', async (req, res) => {
                         const verified = jwt.verify(token, SECRET_KEY); 
                         
                         if (verified.id) {
-                                console.log('activityadd.............................................', await addActivityToRoutine(routineId, activityId, count,duration));
                             await addActivityToRoutine(routineId, activityId, count, duration );
                             return res.send({ routineId: +routineId,
                                 activityId: activityId,

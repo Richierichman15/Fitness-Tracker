@@ -16,7 +16,6 @@ router.get('/health', async (req, res, next) => {
 router.use(async (req, res, next) => {
         const prefix = 'Bearer ';
         const auth = req.header('Authorization');
-    console.log('header.........:',req.headers.authorization, 'body:', req.body);                               //added after this
         if (!auth) {
                 next();
 
