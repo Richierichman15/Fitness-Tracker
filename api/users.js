@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
 const router = express.Router();
-const { createUser, getUserById, getUserByUsername } = require("../db/users")
+const { createUser, getUserByUsername } = require("../db/users")
 const { getAllRoutinesByUser, getPublicRoutinesByUser } = require("../db/routines")
-// const { requireUser } = require('./utils')
+const requireUser = require('./utils')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -70,22 +70,24 @@ router.post('/login', async (req, res) => {
 });
 
 // GET /api/users/me
-router.get('/me', async (req, res, next) => {
+router.get('/me', requireUser, async (req, res, next) => {
 
   try {
-    if (!req.user) {
-      res.status(401).send({
-        error: "I am error",
-        message: "You must be logged in to perform this action",
-        name: "Unauthorized"
-      });
-    }
+    // if (!req.user) {
+    //   res.status(401).send({
+    //     error: "I am error",
+    //     message: "You must be logged in to perform this action",
+    //     name: "Unauthorized"
+    //   });
+    // }
 
-    if (req.user) {
-      const info = await getUserById(req.user.id);
-      res.send(info);
+    // if (req.user) {
+    //   const info = await getUserById(req.user.id);
+    //   res.send(info);
 
-    }
+    // }
+    res.send(req.user)
+
 
   } catch (err) {
     next(err);

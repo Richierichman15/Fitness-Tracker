@@ -1,4 +1,5 @@
 const requireUser =((req, res, next) => {
+  console.log('REQUIREUSER...........');
     if (!req.user) {
       res.status(401)
       res.send({
