@@ -19,7 +19,6 @@ const Home = (props) => {
     // }, [])
     return(
         <>
-        <Header />
         {
             props.isLoggedIn ?
             <>

@@ -2,21 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
-    const { email, setEmail } = useState('');
+  const [ showLoginButton, setShowLoginButton ] = useState(false)
     const { username, SetUserName } = useState('');
     const { pass, SetPass } = useState('');
     const navigate = useNavigate();
 
-    // const sumbitted = () => {
-    //     e.preventDefault()
-    // }
-
-
-
-
     
         const handleLogIn = async () => {
-      
             try {
               const response = await fetch(`/api/users/login`, {
                 method: "POST",
@@ -24,12 +16,14 @@ const Login = (props) => {
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: 'superman27',
-                    password: 'krypt0n0rbust'
+                    username: username,
+                    password: pass
                 })
               });
               const result = await response.json();
               console.log(result);
+              window.localStorage.setItem('token', result.data.token)
+              props.setIsLoggedIn(true)
               navigate('/user')
               return result
               
@@ -44,8 +38,6 @@ const Login = (props) => {
         <div className='auth-container'>
             <h2>Login</h2>
         <form className='login-form'>
-            <label htmlFor='email'>Email</label>
-            <input value={email} type="email" placeholder="example@gmail.com" id='email' name='email'></input>
             <label htmlFor='username'>Username</label>
             <input value={username} type="username" placeholder='Username' id='username' name='username'></input>
             <label htmlFor='password'>Password</label>

@@ -12,7 +12,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
 // POST /api/users/register
 router.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
-
+  console.log('NAME', req.body)
   try {
     const _user = await getUserByUsername(req.body.username);
 
@@ -53,9 +53,9 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
+  console.log('name', req.body);
   try {
     const getName = await getUserByUsername(username);
-    console.log('name', getName);
     const passwordHash = await bcrypt.compare(password, getName.password)
 
     if (passwordHash === true) {
@@ -74,22 +74,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', requireUser, async (req, res, next) => {
 
   try {
-    // if (!req.user) {
-    //   res.status(401).send({
-    //     error: "I am error",
-    //     message: "You must be logged in to perform this action",
-    //     name: "Unauthorized"
-    //   });
-    // }
-
-    // if (req.user) {
-    //   const info = await getUserById(req.user.id);
-    //   res.send(info);
-
-    // }
     res.send(req.user)
-
-
   } catch (err) {
     next(err);
   }
