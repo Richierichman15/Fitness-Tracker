@@ -10,7 +10,15 @@ const bodyParser = require('body-parser');
 
 //// Setup your Middleware and API Router here
 
-//// const path = require('path');
+ const path = require('path');
+app.use("/dist", express.static(path.join(__dirname, "dist")));
+
+ app.get("/", (req,res) => {
+     res.sendFile(path.join(__dirname, "index.html"))
+ });
+
+
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
