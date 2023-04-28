@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
 const express = require("express");
 const router = express.Router();
-const { createUser, getUserById, getUserByUsername } = require("../db/users")
+const { createUser, getUserByUsername } = require("../db/users")
 const { getAllRoutinesByUser, getPublicRoutinesByUser } = require("../db/routines")
 const requireUser = require('./utils')
 const bcrypt = require('bcrypt');
@@ -88,6 +88,7 @@ router.get('/me', requireUser, async (req, res, next) => {
     // }
     res.send(req.user)
 
+
   } catch (err) {
     next(err);
   }
@@ -112,6 +113,5 @@ router.get('/:username/routines', async (req, res) => {
     console.log(err);
   }
 });
-
 
 module.exports = router;
