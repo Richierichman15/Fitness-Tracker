@@ -67,7 +67,6 @@ const getUserByUsername = async(userName) => {
     console.log(error);
   }
 }
-
 module.exports = {
   createUser,
   getUser,

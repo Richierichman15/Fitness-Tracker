@@ -1,7 +1,9 @@
 const { attachActivitiesToRoutines } = require("./activities");
 const { getUserByUsername } = require("./users");
 const client = require("./client");
+
 const createRoutine = async ({ creatorId, isPublic, name, goal }) => {
+  if (!name){ return }////added this later, MAY BREAK OTHER THINGS!!!!!!!!!
   try {
     const { rows: [routine] } = await client.query(`
     INSERT INTO routines("creatorId", "isPublic", "name", "goal")

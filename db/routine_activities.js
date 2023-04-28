@@ -35,8 +35,8 @@ async function getRoutineActivitiesByRoutine({ id }) {
 try {
   const {rows} = await client.query(`
     SELECT * FROM routine_activities
-    WHERE "routineId" = ${id}
-  `);
+    WHERE "routineId" =$1
+  `,[id]);
   return rows;
 } catch (error) {
   console.log(error);
@@ -63,7 +63,6 @@ try {
  WHERE id=$1
 RETURNING *;
  `, [id])
-console.log('routine......',routineActivity);
  return routineActivity;
 } catch(err) {
   console.log(err);
@@ -79,7 +78,6 @@ try{
   ON routine_activities."routineId"=routines.id
   AND routine_activities.id=$1;
   `,[routineActivityId])
-console.log('routineId......',routineFromRoutineActivities);
   return routineFromRoutineActivities.creatorId === userId
 //check if creatorId equals userId
 } catch(err) {
