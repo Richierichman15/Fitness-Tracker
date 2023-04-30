@@ -31,11 +31,13 @@ router.post('/register', async (req, res, next) => {
       })
     }
 
-    if (!username) {return res.send({
-      message: "Please provide username!",
-      error: "No username detected",
-      name: "noUserName"
-    })}
+    if (!username) {
+      return res.send({
+        message: "Please provide username!",
+        error: "No username detected",
+        name: "noUserName"
+      })
+    }
 
     if (!_user) {
       const user = await createUser({
@@ -55,17 +57,30 @@ router.post('/register', async (req, res, next) => {
 // POST /api/users/login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body.user;
- 
+
   try {
-    const getName = await getUserByUsername(username);
-    const passwordHash = await bcrypt.compare(password, getName.password)
-    if (passwordHash === false){ res.send({ message: "Incorrect password" })}
-    if (passwordHash === true) {
-      const userInfo = { id: getName.id, username: getName};
-      const token = jwt.sign(userInfo, SECRET_KEY)
-      res.send({ message: "you're logged in!", token: token, user: userInfo });
+    const user = await getUserByUsername(username);
+    console.log('PASS..............', user);
+    if (user) {
+      const passwordHash = await bcrypt.compare(password, user.password)
+
+      if (!passwordHash) { res.send({ 
+        message: "Incorrect password",
+        error: "IncorrectPassword"
+       }) }
+      if (passwordHash) {
+        const userInfo = { id: user.id, username: user };
+        const token = jwt.sign(userInfo, SECRET_KEY)
+        res.send({ message: "you're logged in!", token: token, user: userInfo });
+      }
+    } else {
+      res.send({ 
+        message: "Password or Username incorrect",
+        error: "I am Error"
+      })
     }
 
+    
   } catch (err) {
     console.log(err);
   }

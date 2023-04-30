@@ -5,6 +5,7 @@ const Register = (props) => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (event) => {
@@ -26,9 +27,15 @@ const Register = (props) => {
       console.log('RES', response);
       const result = await response.json();
       console.log("RESULT..........", result);
-      window.localStorage.setItem('token', result.token)
-      navigate('/login')
-      return result
+      
+      if (result.error) {
+
+        setErrorMessage(result.message)
+
+      } else {
+        window.localStorage.setItem('token', result.token)
+        navigate('/login')
+      }
     } catch (err) {
       console.error(err);
     }
@@ -60,6 +67,9 @@ const Register = (props) => {
         <button type='submit' onClick={handleRegister}>Register</button>
       </form>
       <button className="link-btn" onClick={handleRegister}>Oops! Already have an Account? Login Now!!</button>
+      {
+        errorMessage
+      }
     </div>
   )
 }
