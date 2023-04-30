@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
-  const [ showLoginButton, setShowLoginButton ] = useState(false)
-    const { username, SetUserName } = useState('');
-    const { pass, SetPass } = useState('');
+  // const [ showLoginButton, setShowLoginButton ] = useState(false)
+    const [ username, setUserName ] = useState('');
+    const [passInput, setPassInput ] = useState('');
     const navigate = useNavigate();
 
     
-        const handleLogIn = async () => {
+        const handleLogin = async (event) => {
+          event.preventDefault();
             try {
               const response = await fetch(`/api/users/login`, {
                 method: "POST",
@@ -16,36 +17,49 @@ const Login = (props) => {
                   'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                  user: {
                     username: username,
-                    password: pass
+                    password: passInput
+                  }
                 })
               });
               const result = await response.json();
-              console.log(result);
-              window.localStorage.setItem('token', result.data.token)
+
+              window.localStorage.setItem('token', result.token)
               props.setIsLoggedIn(true)
-              navigate('/user')
+              navigate('/home')
               return result
-              
+
             } catch (err) {
               console.error(err);
             }
         }
-        handleLogIn()
-    
+     
+        const handleLogOut = () => {
+          window.localStorage.removeItem('token');
+          props.setIsLoggedIn(false);
+          navigate('/home');
+        }
+        const handleUsernameChange = (event) => {
+          setUserName(event.target.value);
+        }
+      
+        const handlePasswordChange = (event) => {
+          setPassInput(event.target.value);
+        }
 
-    return(
-        <div className='auth-container'>
+        return (
+          <div className='auth-container'>
             <h2>Login</h2>
-        <form className='login-form'>
-            <label htmlFor='username'>Username</label>
-            <input value={username} type="username" placeholder='Username' id='username' name='username'></input>
-            <label htmlFor='password'>Password</label>
-            <input value={pass} type="password" placeholder="*******" id='password' name='password'></input>
-            <button type='submit' onClick={handleLogIn}>Log in</button>
-        </form>
-        <button className="link-btn" onClick={() => props.onFormSwitch("Login")}>Oops! Don't have an account? Register Now!</button>
-        </div>
+            <form className='login-form'>
+              <label htmlFor='username'>Username</label>
+              <input value={username} type="text" placeholder='Username' id='username' name='username' onChange={handleUsernameChange}></input>
+              <label htmlFor='password'>Password</label>
+              <input value={passInput} type="password" placeholder="*******" id='password' name='password' onChange={handlePasswordChange}></input> 
+              <button type='submit'onClick={handleLogin}>Log in</button>
+            </form>
+            <button type='submit' onClick={handleLogOut}>Log Out</button>
+          </div>
     )
 }
 

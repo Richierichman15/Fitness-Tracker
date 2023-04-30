@@ -6,6 +6,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";//crtl z this 
 import Activities from "./components/Activities";
 import Routines from "./components/Routines";
+import MyRoutines from "./components/MyRoutines";
 
 const App = () => {
   const [ isLoggedIn, setIsLoggedIn ] = useState(window.localStorage.getItem('token'))
@@ -18,6 +19,8 @@ const App = () => {
       <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
       <Route path="/activities" element={<Activities />} />
       <Route path="/routines" element={<Routines />} />
+      <Route path="/myroutines" element={<MyRoutines isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>} />
+      
     </Routes>
     </>
 

@@ -62,7 +62,6 @@ const getUserByUsername = async(userName) => {
     SELECT * FROM users
     WHERE username=$1;
     `, [userName])
-    console.log('US', user);
     return user
   } catch (error) {
     console.log(error);

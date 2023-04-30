@@ -7,7 +7,8 @@ const Register = (props) => {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleRegister = async (event) => {
+    event.preventDefault();
     try {
       const response = await fetch(
         `/api/users/register`, {
@@ -25,8 +26,8 @@ const Register = (props) => {
       console.log('RES', response);
       const result = await response.json();
       console.log("RESULT..........", result);
-      window.localStorage.setItem('token', result.data.token)
-      navigate('/Home')
+      window.localStorage.setItem('token', result.token)
+      navigate('/login')
       return result
     } catch (err) {
       console.error(err);
@@ -56,7 +57,7 @@ const Register = (props) => {
         <input value={username} type="username" placeholder="username" id='username' name='username' onChange={handleUsernameChange}></input>
         <label htmlFor='password'>Password</label>
         <input value={password} type="password" placeholder="*******" id='password' name='password' onChange={handlePasswordChange}></input>
-        <button type='submit'>Register</button>
+        <button type='submit' onClick={handleRegister}>Register</button>
       </form>
       <button className="link-btn" onClick={handleRegister}>Oops! Already have an Account? Login Now!!</button>
     </div>
