@@ -22,17 +22,17 @@ import { useNavigate } from "react-router-dom";
                   }
                 })
               });
-              console.log('RES', response);
               const result = await response.json();
               console.log(result);
               window.localStorage.setItem('token', result.data.token)
-              navigate('/Home')
+              navigate('/home')
               return result
             } catch (err) {
               console.error(err);
             }
           
     }
+    console.log('HC', handleRegister());
 
     return(
         <div className="auth-container">
@@ -44,9 +44,9 @@ import { useNavigate } from "react-router-dom";
             <input value={username} type="username" placeholder="username" id='username' name='username'></input>
             <label htmlFor='password'>Password</label>
             <input value={password} type="password" placeholder="*******" id='password' name='password'></input>
-            <button type='submit'>Log in</button>
+            <button type='submit'on onClick={handleRegister}>Log in</button>
         </form>
-        <button className="link-btn" onClick={(handleRegister)}>Oops! Already have an Account? Login Now!!</button>
+        <button className="link-btn">Oops! Already have an Account? Login Now!!</button>
         </div>
     )
 }

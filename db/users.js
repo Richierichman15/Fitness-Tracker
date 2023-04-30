@@ -56,12 +56,12 @@ const getUserById = async(userId) => {
   }
 }
 
-const getUserByUsername = async(userName) => {
+const getUserByUsername = async(username) => {
   try {
     const { rows: [user] } = await client.query(`
     SELECT * FROM users
     WHERE username=$1;
-    `, [userName])
+    `, [username])
     console.log('US', user);
     return user
   } catch (error) {

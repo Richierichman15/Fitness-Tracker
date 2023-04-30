@@ -53,7 +53,6 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('name', req.body);
   try {
     const getName = await getUserByUsername(username);
     const passwordHash = await bcrypt.compare(password, getName.password)
