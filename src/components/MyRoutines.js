@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";//zzz
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
 
-const Routines = () => {
+const MyRoutines = ({username}) => {
   const [token, setToken] = useState(window.localStorage.getItem('token'))
   const [routines, setRoutines] = useState([])
   const navigate = useNavigate()
   useEffect(() => {
 
-    const myData = async () => {
+    const myRoutinesData = async () => {
 
       try {
-        const response = await fetch(`/api/routines`)
+        const response = await fetch(`/api/users/${username}/routines`)
         const result = await response.json();
 
         setRoutines(result)
@@ -20,12 +20,12 @@ const Routines = () => {
         console.error(err);
       }
     }
-    myData()
+    myRoutinesData()
   }, [])
 
   const allRoutines = routines.map((routine, i) => {
     return (
-      <li key={i} className='routine'>
+      <li key={i} className='MyRoutines'>
         <div>
           <h4>Creator Name: {routine.creatorName}</h4>
           <h4>Routine Name: {routine.name}</h4>
@@ -34,11 +34,10 @@ const Routines = () => {
           {routine.activities.map((activity, i) => {
             return (
               <div>
-                <h4>Activity: {activity.name}</h4>
-                <h5>Description: {activity.description}</h5>
-                <h6>Duration: {activity.duration}</h6>
-                <h6>Count: {activity.count}</h6>
-                
+                <h5>Activity Name: {activity.name}</h5>
+                <h5>Activity Description: {activity.description}</h5>
+                <h5>Activity Duration: {activity.duration}</h5>
+                <h5>Activity Count: {activity.count}</h5>
               </div>
             )
 
@@ -58,4 +57,4 @@ const Routines = () => {
   )
 }
 
-export default Routines
+export default MyRoutines

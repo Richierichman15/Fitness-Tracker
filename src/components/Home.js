@@ -22,10 +22,11 @@ const Home = (props) => {
         {
             props.isLoggedIn ?
             <>
-            <h1>Please Log in First</h1>
-            </> :
+            <h1>Welcome To Fitness Tracker!</h1>
+                        </> :
             <>
             <h1>Welcome To Fitness Tracker!</h1>
+            <h3>Click the login link above to log in.</h3>
             </>
         }
         </>
