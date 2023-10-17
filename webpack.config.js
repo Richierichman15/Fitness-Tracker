@@ -1,4 +1,5 @@
 module.exports = {
+  mode: 'development',
   module: {
     rules: [
       {
@@ -12,3 +13,4 @@ module.exports = {
     ]
   }
 };
+
